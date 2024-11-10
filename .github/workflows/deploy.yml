@@ -1,0 +1,59 @@
+name: Deploy and Versioning
+
+on:
+  # main 브랜치로 푸시될 때 워크플로가 트리거됩니다.
+  push:
+    branches:
+      - main
+
+jobs:
+  # 첫 번째 Job: build-and-deploy
+  build-and-deploy:
+    # 워크플로가 실행될 가상 환경을 Ubuntu로 설정합니다.
+    runs-on: ubuntu-latest
+    
+    # 각 단계 정의
+    steps:
+      # 1. 코드 체크아웃
+      - name: Check out code
+        uses: actions/checkout@v2  # GitHub Actions에서 제공하는 checkout 액션을 사용해 저장소 코드를 가져옵니다.
+
+      # 2. Node.js 설정
+      - name: Set up Node.js
+        uses: actions/setup-node@v2  # Node.js 환경을 설정하기 위해 setup-node 액션을 사용합니다.
+        with:
+          node-version: '16'  # Node.js 버전을 16으로 지정합니다. (React 프로젝트와 호환)
+
+      # 3. 의존성 설치
+      - name: Install dependencies
+        run: npm install  # package.json에 정의된 의존성을 모두 설치합니다.
+
+      # 4. 프로젝트 빌드
+      - name: Build project
+        run: npm run build  # React 프로젝트를 배포할 수 있는 정적 파일로 빌드합니다.
+
+      # 5. GitHub Pages로 배포
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3  # GitHub Pages로 쉽게 배포할 수 있도록 하는 gh-pages 액션을 사용합니다.
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # GitHub 인증을 위한 토큰. 저장소 권한이 있는 GITHUB_TOKEN을 사용합니다.
+          publish_branch: gh-pages  # 배포가 이루어질 브랜치를 gh-pages로 지정합니다.
+          publish_dir: ./build  # 빌드된 정적 파일들이 있는 디렉토리 위치를 지정합니다.
+    
+  # 두 번째 Job: version (버전 관리)
+  version:
+    # 동일한 Ubuntu 환경에서 실행됩니다.
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 코드 체크아웃
+      - name: Check out code
+        uses: actions/checkout@v2  # 저장소 코드를 가져옵니다.
+
+      # 2. 버전 증가 및 태그 생성
+      - name: Bump version and tag
+        run: |
+          npm version patch -m "Upgrade to version %s"  # 패치 버전을 자동으로 증가시키고, 커밋 메시지에 버전 정보를 포함합니다.
+          git push --follow-tags  # 새로 생성된 태그를 원격 저장소로 푸시하여 GitHub에 버전 태그를 추가합니다.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub 인증을 위한 토큰을 환경 변수로 설정합니다.

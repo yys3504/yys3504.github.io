@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './SignInComponent.css';
+import './sign-in.component.css';
 
 export default function SignInComponent() {
   const [isLoginVisible, setIsLoginVisible] = useState(true);

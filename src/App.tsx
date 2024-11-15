@@ -1,14 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import SignInComponent from './app/component/sign-in/sign-in.component';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import MainPage from './pages/MainPage';
+import PopularPage from './pages/PopularPage';
+import SearchPage from './pages/SearchPage';
+import WishlistPage from './pages/WishlistPage';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <SignInComponent />
-    </div>
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/popular" element={<PopularPage />} />
+        <Route path="/search" element={<SearchPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

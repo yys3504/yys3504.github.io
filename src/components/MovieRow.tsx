@@ -1,54 +1,51 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useRef } from "react";
 import "./styles/MovieRow.css";
 
 interface MovieRowProps {
   title: string;
-  fetchUrl: string;
+  movies: { poster_path: string; title?: string; name?: string }[];
 }
 
-const MovieRow: React.FC<MovieRowProps> = ({ title, fetchUrl }) => {
-  const [movies, setMovies] = useState<any[]>([]);
+const MovieRow: React.FC<MovieRowProps> = ({ title, movies }) => {
+  const rowRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(fetchUrl, {
-        params: {
-          api_key: "b2fe57ddb2df376d8122bd8a24ee6e9a",
-          language: "ko-KR",
-        },
-      });
-      setMovies(response.data.results);
-    };
-
-    fetchData();
-  }, [fetchUrl]);
-
-  const scroll = (direction: "left" | "right") => {
-    const container = document.querySelector(`.movie-row__list--${title}`);
-    if (!container) return;
-    const scrollAmount = direction === "left" ? -300 : 300;
-    container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  const handleScroll = (direction: "left" | "right") => {
+    const { current: container } = rowRef;
+    if (container) {
+      const scrollAmount =
+        direction === "left" ? -container.clientWidth : container.clientWidth;
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
   };
 
   return (
-    <div className="movie-row">
-      <h2>{title}</h2>
-      <div className="movie-row__container">
-        <button className="movie-row__nav left" onClick={() => scroll("left")}>
+    <div className="movie-row-container">
+      <h2 className="movie-row-title">{title}</h2>
+      <div
+        className="movie-row-wrapper"
+        onMouseEnter={() => (rowRef.current!.style.overflowX = "scroll")}
+        onMouseLeave={() => (rowRef.current!.style.overflowX = "hidden")}
+      >
+        <button
+          className="movie-row-button left"
+          onClick={() => handleScroll("left")}
+        >
           {"<"}
         </button>
-        <div className={`movie-row__list movie-row__list--${title}`}>
-          {movies.map((movie) => (
+        <div className="movie-row-content" ref={rowRef}>
+          {movies.map((movie, index) => (
             <img
-              key={movie.id}
-              className="movie-row__poster"
-              src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-              alt={movie.title || movie.name}
+              key={index}
+              className="movie-poster"
+              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              alt={movie.title || movie.name || "Movie Poster"}
             />
           ))}
         </div>
-        <button className="movie-row__nav right" onClick={() => scroll("right")}>
+        <button
+          className="movie-row-button right"
+          onClick={() => handleScroll("right")}
+        >
           {">"}
         </button>
       </div>

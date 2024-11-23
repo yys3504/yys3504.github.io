@@ -1,54 +1,70 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Slider from 'react-slick';
 import './styles/BannerSlider.css';
 
 const BannerSlider: React.FC = () => {
-  const [movie, setMovie] = useState<any>(null);
+  const [movies, setMovies] = useState<any[]>([]);
+  const SLIDE_COUNT = 5;
 
   useEffect(() => {
-    const fetchBannerMovie = async () => {
+    const fetchMovies = async () => {
       try {
-        const response = await axios.get('https://api.themoviedb.org/3/trending/all/week', {
-          params: {
-            api_key: 'b2fe57ddb2df376d8122bd8a24ee6e9a',
-            language: 'ko-KR',
-          },
-        });
-        const randomMovie = response.data.results[
-          Math.floor(Math.random() * response.data.results.length)
-        ];
-        setMovie(randomMovie);
+        const response = await axios.get(
+          'https://api.themoviedb.org/3/movie/popular',
+          {
+            params: {
+              api_key: 'b2fe57ddb2df376d8122bd8a24ee6e9a',
+              language: 'ko-KR',
+            },
+          }
+        );
+        setMovies(response.data.results.slice(0, SLIDE_COUNT));
       } catch (error) {
-        console.error('Error fetching banner movie:', error);
+        console.error('Error fetching movies:', error);
       }
     };
 
-    fetchBannerMovie();
+    fetchMovies();
   }, []);
 
-  if (!movie) {
-    return <div>로딩 중...</div>;
-  }
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 1000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    arrows: true,
+  };
 
   return (
-    <header
-      className="banner"
-      style={{
-        backgroundSize: 'cover',
-        backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
-        backgroundPosition: 'center center',
-      }}
-    >
-      <div className="banner-contents">
-        <h1 className="banner-title">{movie.title || movie.name}</h1>
-        <div className="banner-buttons">
-          <button className="banner-button">재생</button>
-          <button className="banner-button">찜하기</button>
-        </div>
-        <p className="banner-description">{movie.overview}</p>
-      </div>
-      <div className="banner-fadeBottom" />
-    </header>
+    <div className="banner-slider">
+      <Slider {...settings}>
+        {movies.map((movie) => (
+          <div key={movie.id} className="banner-slider__slide">
+            <div
+              className="banner-slider__image"
+              style={{
+                backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
+              }}
+            >
+              <div className="banner-slider__content">
+                <h1 className="banner-slider__title">
+                  {movie.title || '제목 없음'}
+                </h1>
+                <p className="banner-slider__description">{movie.overview}</p>
+                <div className="banner-slider__buttons">
+                  <button className="banner-slider__button">재생</button>
+                  <button className="banner-slider__button">찜하기</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Slider>
+    </div>
   );
 };
 

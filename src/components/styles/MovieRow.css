@@ -1,41 +1,61 @@
 .movie-row {
-  margin: 20px 0;
-  padding: 20px;
-  background-color: #111; /* 영화 리스트 배경색 */
-  border-radius: 10px; /* 리스트에 부드러운 모서리 추가 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
+  margin: 20px;
 }
 
 .movie-row h2 {
-  color: white;
-  font-size: 1.5rem;
   margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-.movie-row-posters {
+.movie-row__container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.movie-row__list {
   display: flex;
   overflow-x: scroll;
-  overflow-y: hidden;
-  padding: 10px 0;
-  scrollbar-width: none; /* 스크롤바 숨기기 (Firefox) */
+  padding: 10px;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 
-.movie-row-posters::-webkit-scrollbar {
-  display: none; /* 스크롤바 숨기기 (Chrome, Safari) */
+.movie-row__list::-webkit-scrollbar {
+  display: none;
 }
 
-.movie-row-poster {
+.movie-row__poster {
   width: 150px;
-  height: 225px;
-  margin-right: 10px;
+  height: auto;
   object-fit: cover;
-  border-radius: 5px;
+  margin-right: 10px;
   transition: transform 0.3s;
+  border-radius: 5px;
   cursor: pointer;
-  background-color: #222; /* 포스터 뒤 빈 공간 배경 */
 }
 
-.movie-row-poster:hover {
+.movie-row__poster:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); /* 강조 효과 */
+}
+
+.movie-row__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.movie-row__nav.left {
+  left: 0;
+}
+
+.movie-row__nav.right {
+  right: 0;
 }

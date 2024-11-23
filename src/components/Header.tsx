@@ -1,31 +1,33 @@
-import React, { useState, useEffect } from "react";
-import './styles/Header.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./styles/Header.css";
 
 const Header: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50); // 스크롤이 50px 이상이면 true
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <div className={`header ${isScrolled ? "scrolled" : ""}`}>
-      <div className="header__logo">
-        <a href="/">Netflix</a>
+    <header className="header">
+      <div className="header__left">
+        <Link to="/" className="header__logo">
+          Netflix
+        </Link>
       </div>
-      <div className="header__nav">
-        <a href="/">홈</a>
-        <a href="/popular">인기</a>
-        <a href="/search">검색</a>
-        <a href="/wishlist">찜 목록</a>
+      <nav className="header__nav">
+        <Link to="/" className="header__link">
+          홈
+        </Link>
+        <Link to="/popular" className="header__link">
+          인기
+        </Link>
+        <Link to="/search" className="header__link">
+          검색
+        </Link>
+        <Link to="/wishlist" className="header__link">
+          찜 목록
+        </Link>
+      </nav>
+      <div className="header__right">
+        <button className="header__logout">로그아웃</button>
       </div>
-      <button className="header__logout">로그아웃</button>
-    </div>
+    </header>
   );
 };
 

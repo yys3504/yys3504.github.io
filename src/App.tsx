@@ -5,11 +5,12 @@ import MainPage from "./pages/MainPage";
 import PopularPage from "./pages/PopularPage";
 import SearchPage from "./pages/SearchPage";
 import WishlistPage from "./pages/WishlistPage";
+import "./App.css";
 
 const App: React.FC = () => {
   return (
     <Router>
-      <div>
+      <div className="App">
         {/* Header Component */}
         <Header />
         

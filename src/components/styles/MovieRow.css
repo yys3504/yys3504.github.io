@@ -1,31 +1,41 @@
 .movie-row {
-  margin-left: 20px;
-  color: white;
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #111; /* 영화 리스트 배경색 */
+  border-radius: 10px; /* 리스트에 부드러운 모서리 추가 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
 }
 
 .movie-row h2 {
+  color: white;
+  font-size: 1.5rem;
   margin-bottom: 10px;
 }
 
-.movie-row__posters {
+.movie-row-posters {
   display: flex;
-  overflow-y: hidden;
   overflow-x: scroll;
-  padding: 20px;
+  overflow-y: hidden;
+  padding: 10px 0;
+  scrollbar-width: none; /* 스크롤바 숨기기 (Firefox) */
 }
 
-.movie-row__posters::-webkit-scrollbar {
-  display: none;
+.movie-row-posters::-webkit-scrollbar {
+  display: none; /* 스크롤바 숨기기 (Chrome, Safari) */
 }
 
-.movie-row__poster {
-  max-height: 150px;
-  object-fit: contain;
+.movie-row-poster {
+  width: 150px;
+  height: 225px;
   margin-right: 10px;
-  transition: transform 0.2s;
+  object-fit: cover;
+  border-radius: 5px;
+  transition: transform 0.3s;
+  cursor: pointer;
+  background-color: #222; /* 포스터 뒤 빈 공간 배경 */
 }
 
-.movie-row__poster:hover {
-  transform: scale(1.08);
-  opacity: 1;
+.movie-row-poster:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); /* 강조 효과 */
 }

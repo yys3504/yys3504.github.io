@@ -13,12 +13,12 @@ const App: React.FC = () => {
     return (
         <Router>
             <div className="App">
-                {/* 로그인 상태일 때만 Header 표시 */}
+                {/* Header 표시: 로그인 상태일 때만 */}
                 {isAuthenticated() && (
                     <Header
                         onLogout={() => {
                             logout();
-                            window.location.href = "/signin";
+                            window.location.href = "/signin"; // 로그아웃 후 로그인 페이지로 이동
                         }}
                     />
                 )}

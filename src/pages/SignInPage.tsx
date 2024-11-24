@@ -17,9 +17,7 @@ const SignInPage: React.FC = () => {
         if (isSignIn !== signIn) {
             setIsSignIn(signIn);
             setVisibleFields(0);
-            setTimeout(() => {
-                showFieldsSequentially(3);
-            }, 200);
+            setTimeout(() => showFieldsSequentially(3), 200);
         }
     };
 
@@ -57,7 +55,7 @@ const SignInPage: React.FC = () => {
             password.trim(),
             () => {
                 alert("Login successful!");
-                navigate("/"); // "/" 경로로 이동
+                navigate("/"); // 메인 페이지로 이동
             },
             () => {
                 alert("Invalid credentials.");

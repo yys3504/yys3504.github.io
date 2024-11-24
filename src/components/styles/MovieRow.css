@@ -18,7 +18,7 @@
 
 .movie-row-content {
   display: flex;
-  overflow-x: auto;
+  overflow-x: none;
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
   padding: 0 80px; /* 양쪽 간격 */

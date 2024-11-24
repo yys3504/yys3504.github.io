@@ -8,8 +8,8 @@ interface Movie {
 }
 
 const MainPage: React.FC = () => {
-    const [popularMovies, setPopularMovies] = useState<Movie[]>([]);
     const [actionMovies, setActionMovies] = useState<Movie[]>([]);
+    const [familyMovies, setFamilyMovies] = useState<Movie[]>([]);
     const [romanceMovies, setRomanceMovies] = useState<Movie[]>([]);
 
     useEffect(() => {
@@ -35,10 +35,13 @@ const MainPage: React.FC = () => {
         const baseUrl = "https://api.themoviedb.org/3";
         const apiKey = "b2fe57ddb2df376d8122bd8a24ee6e9a";
 
-        fetchMovies(`${baseUrl}/movie/popular?api_key=${apiKey}`, setPopularMovies);
         fetchMovies(
             `${baseUrl}/discover/movie?with_genres=28&api_key=${apiKey}`,
             setActionMovies
+        );
+        fetchMovies(
+            `${baseUrl}/discover/movie?with_genres=10751&api_key=${apiKey}`, // 어린이 영화 (모든 연령층)
+            setFamilyMovies
         );
         fetchMovies(
             `${baseUrl}/discover/movie?with_genres=10749&api_key=${apiKey}`,
@@ -50,8 +53,8 @@ const MainPage: React.FC = () => {
         <div className="main-page">
             <BannerSlider />
             <div style={{ marginTop: "20px" }}>
-                <MovieRow title="인기 영화" movies={popularMovies} />
                 <MovieRow title="액션 영화" movies={actionMovies} />
+                <MovieRow title="어린이 영화" movies={familyMovies} />
                 <MovieRow title="로맨스 영화" movies={romanceMovies} />
             </div>
         </div>

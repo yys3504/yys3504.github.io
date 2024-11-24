@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "./styles/MovieRow.css";
 
 interface Movie {
@@ -13,6 +13,13 @@ interface MovieRowProps {
 
 const MovieRow: React.FC<MovieRowProps> = ({ title, movies }) => {
   const rowRef = useRef<HTMLDivElement | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
+
+  useEffect(() => {
+    if (movies.length > 0) {
+      setIsLoading(false); // movies가 로드되면 로딩 상태 해제
+    }
+  }, [movies]);
 
   const handleScroll = (direction: "left" | "right") => {
     if (rowRef.current) {
@@ -47,14 +54,18 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies }) => {
           &lt;
         </button>
         <div className="movie-row-content" ref={rowRef}>
-          {movies.map((movie, index) => (
-            <img
-              key={index}
-              src={movie.poster_path}
-              alt={movie.title}
-              className="movie-poster"
-            />
-          ))}
+          {isLoading ? (
+            <div className="movie-row-loading">Loading...</div> // 로딩 중 표시
+          ) : (
+            movies.map((movie, index) => (
+              <img
+                key={index}
+                src={movie.poster_path}
+                alt={movie.title}
+                className="movie-poster"
+              />
+            ))
+          )}
         </div>
         <button
           className="movie-row-arrow movie-row-arrow-right"

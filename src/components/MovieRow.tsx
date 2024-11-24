@@ -1,53 +1,68 @@
 import React, { useRef } from "react";
 import "./styles/MovieRow.css";
 
+interface Movie {
+  poster_path: string;
+  title: string;
+}
+
 interface MovieRowProps {
   title: string;
-  movies: { poster_path: string; title?: string; name?: string }[];
+  movies: Movie[];
 }
 
 const MovieRow: React.FC<MovieRowProps> = ({ title, movies }) => {
   const rowRef = useRef<HTMLDivElement | null>(null);
 
   const handleScroll = (direction: "left" | "right") => {
-    const { current: container } = rowRef;
-    if (container) {
-      const scrollAmount =
-        direction === "left" ? -container.clientWidth : container.clientWidth;
-      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    if (rowRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = rowRef.current;
+      const maxScrollLeft = scrollWidth - clientWidth;
+
+      let scrollTo =
+        direction === "left"
+          ? scrollLeft - clientWidth
+          : scrollLeft + clientWidth;
+
+      // 끝에 도달하면 처음으로 돌아가기
+      if (direction === "right" && scrollLeft >= maxScrollLeft) {
+        scrollTo = 0;
+      } else if (direction === "left" && scrollLeft <= 0) {
+        scrollTo = maxScrollLeft;
+      }
+
+      rowRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
     }
   };
 
   return (
-    <div className="movie-row-container">
+    <div className="movie-row">
       <h2 className="movie-row-title">{title}</h2>
-      <div
-        className="movie-row-wrapper"
-        onMouseEnter={() => (rowRef.current!.style.overflowX = "scroll")}
-        onMouseLeave={() => (rowRef.current!.style.overflowX = "hidden")}
-      >
+      <div className="movie-row-container">
+        <div className="movie-row-gradient-left" />
         <button
-          className="movie-row-button left"
+          className="movie-row-arrow movie-row-arrow-left"
           onClick={() => handleScroll("left")}
         >
-          {"<"}
+          &lt;
         </button>
         <div className="movie-row-content" ref={rowRef}>
           {movies.map((movie, index) => (
             <img
               key={index}
+              src={movie.poster_path}
+              alt={movie.title}
               className="movie-poster"
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title || movie.name || "Movie Poster"}
             />
           ))}
         </div>
         <button
-          className="movie-row-button right"
+          className="movie-row-arrow movie-row-arrow-right"
           onClick={() => handleScroll("right")}
         >
-          {">"}
+          &gt;
         </button>
+        <div className="movie-row-gradient-right" />
       </div>
     </div>
   );

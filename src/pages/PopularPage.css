@@ -1,0 +1,89 @@
+.popular-page {
+    background-color: #141414;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.view-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.view-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.view-button.active {
+    background-color: #555;
+}
+
+.table-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.table-row {
+    display: flex;
+    margin-bottom: 20px;
+    width: 80%;
+}
+
+.table-row img {
+    margin-right: 20px;
+    border-radius: 5px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 10px;
+    margin: 0 10px;
+    background-color: #555;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.infinite-view {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.movie-card img {
+    border-radius: 10px;
+    width: 150px;
+}
+
+.loading {
+    text-align: center;
+    margin: 20px;
+}
+
+.top-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}

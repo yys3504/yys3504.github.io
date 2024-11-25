@@ -1,29 +1,41 @@
-export const tryLogin = (email, password, onSuccess, onFail) => {
+const tryLogin = (email, password, success, fail) => {
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find((u) => u.id === email && u.password === password);
+    const user = users.find((user) => user.id === email && user.password === password);
+
     if (user) {
-        localStorage.setItem("authenticated", "true"); // 로그인 상태 저장
-        onSuccess();
+        localStorage.setItem("isAuthenticated", "true"); // 로그인 상태 저장
+        localStorage.setItem("currentUser", email); // 현재 사용자 저장
+        success();
     } else {
-        onFail();
+        fail();
     }
 };
 
-export const tryRegister = (email, password, onSuccess, onFail) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    if (users.some((u) => u.id === email)) {
-        onFail({ message: "User already exists." });
-    } else {
-        users.push({ id: email, password });
+const tryRegister = (email, password, success, fail) => {
+    try {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const userExists = users.some((existingUser) => existingUser.id === email);
+
+        if (userExists) {
+            throw new Error("이미 존재하는 사용자입니다.");
+        }
+
+        const newUser = { id: email, password: password };
+        users.push(newUser);
         localStorage.setItem("users", JSON.stringify(users));
-        onSuccess();
+        success();
+    } catch (err) {
+        fail(err);
     }
 };
 
-export const isAuthenticated = () => {
-    return localStorage.getItem("authenticated") === "true"; // 로그인 상태 확인
+const isAuthenticated = () => {
+    return localStorage.getItem("isAuthenticated") === "true";
 };
 
-export const logout = () => {
-    localStorage.removeItem("authenticated"); // 로그인 상태 제거
+const logout = () => {
+    localStorage.removeItem("isAuthenticated"); // 로그인 상태 제거
+    localStorage.removeItem("currentUser"); // 현재 사용자 제거
 };
+
+export { tryLogin, tryRegister, isAuthenticated, logout };

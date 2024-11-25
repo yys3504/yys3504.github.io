@@ -10,35 +10,35 @@ import { isAuthenticated, logout } from "./utils/Authentication";
 import "./App.css";
 
 const App: React.FC = () => {
+    const authenticated = isAuthenticated();
+
     return (
         <Router>
             <div className="App">
-                {/* Header 표시: 로그인 상태일 때만 */}
-                {isAuthenticated() && (
+                {authenticated && (
                     <Header
                         onLogout={() => {
                             logout();
-                            window.location.href = "/signin"; // 로그아웃 후 로그인 페이지로 이동
+                            window.location.href = "/signin"; // 로그아웃 시 로그인 화면으로 리다이렉트
                         }}
                     />
                 )}
-
                 <Routes>
                     <Route
                         path="/"
-                        element={isAuthenticated() ? <MainPage /> : <Navigate to="/signin" />}
+                        element={authenticated ? <MainPage /> : <Navigate to="/signin" />}
                     />
                     <Route
                         path="/popular"
-                        element={isAuthenticated() ? <PopularPage /> : <Navigate to="/signin" />}
+                        element={authenticated ? <PopularPage /> : <Navigate to="/signin" />}
                     />
                     <Route
                         path="/search"
-                        element={isAuthenticated() ? <SearchPage /> : <Navigate to="/signin" />}
+                        element={authenticated ? <SearchPage /> : <Navigate to="/signin" />}
                     />
                     <Route
                         path="/wishlist"
-                        element={isAuthenticated() ? <WishlistPage /> : <Navigate to="/signin" />}
+                        element={authenticated ? <WishlistPage /> : <Navigate to="/signin" />}
                     />
                     <Route path="/signin" element={<SignInPage />} />
                 </Routes>

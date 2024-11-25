@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { tryLogin, tryRegister } from "../utils/Authentication";
 import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
 
@@ -7,15 +8,26 @@ const SignInPage: React.FC = () => {
     const [visibleFields, setVisibleFields] = useState<number>(0);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [isRegister, setIsRegister] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         showFieldsSequentially(3);
+        checkAuthentication();
     }, []);
+
+    const checkAuthentication = () => {
+        const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+        if (isAuthenticated) {
+            navigate("/"); // 사용자가 이미 인증되었으면 메인 페이지로 이동
+        }
+    };
 
     const handleTabChange = (signIn: boolean) => {
         if (isSignIn !== signIn) {
             setIsSignIn(signIn);
+            setError(""); // 탭 전환 시 에러 메시지 초기화
             setVisibleFields(0);
             setTimeout(() => showFieldsSequentially(3), 200);
         }
@@ -27,39 +39,28 @@ const SignInPage: React.FC = () => {
         }
     };
 
-    const handleRegister = () => {
-        const { tryRegister } = require("../utils/Authentication");
-        if (!email || !password) {
-            alert("Please fill in all fields.");
-            return;
-        }
-        tryRegister(
-            email.trim(),
-            password.trim(),
+    const handleLogin = () => {
+        tryLogin(
+            email,
+            password,
             () => {
-                alert("Registration successful! You can now sign in.");
-                setIsSignIn(true);
-                setVisibleFields(0);
-                setTimeout(() => showFieldsSequentially(3), 200);
+                alert("로그인 성공!");
+                window.location.href = "/"; // 메인 페이지로 이동
             },
-            (err: { message?: string }) => {
-                alert(err.message || "Registration failed.");
-            }
+            () => setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.")
         );
     };
 
-    const handleLogin = () => {
-        const { tryLogin } = require("../utils/Authentication");
-        tryLogin(
-            email.trim(),
-            password.trim(),
+    const handleRegister = () => {
+        tryRegister(
+            email,
+            password,
             () => {
-                alert("Login successful!");
-                navigate("/"); // 메인 페이지로 이동
+                alert("회원가입 성공! 이제 로그인하세요.");
+                setIsRegister(false);
+                setPassword("");
             },
-            () => {
-                alert("Invalid credentials.");
-            }
+            (err: Error) => setError(err.message || "회원가입에 실패했습니다.")
         );
     };
 
@@ -104,6 +105,7 @@ const SignInPage: React.FC = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
+                                {error && <p className="error">{error}</p>}
                                 <div className={`input ${visibleFields >= 3 ? "visible" : ""}`}>
                                     <button className="submit" onClick={handleLogin}>
                                         SIGN IN
@@ -132,6 +134,7 @@ const SignInPage: React.FC = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
+                                {error && <p className="error">{error}</p>}
                                 <div className={`input ${visibleFields >= 3 ? "visible" : ""}`}>
                                     <button className="submit" onClick={handleRegister}>
                                         SIGN UP

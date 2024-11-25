@@ -5,6 +5,7 @@ const tryLogin = (email, password, success, fail) => {
     if (user) {
         localStorage.setItem("isAuthenticated", "true"); // 로그인 상태 저장
         localStorage.setItem("currentUser", email); // 현재 사용자 저장
+        localStorage.setItem("apiKey", password); // 비밀번호를 API 키로 저장
         success();
     } else {
         fail();
@@ -36,6 +37,7 @@ const isAuthenticated = () => {
 const logout = () => {
     localStorage.removeItem("isAuthenticated"); // 로그인 상태 제거
     localStorage.removeItem("currentUser"); // 현재 사용자 제거
+    localStorage.removeItem("apiKey"); // API 키 제거
 };
 
 export { tryLogin, tryRegister, isAuthenticated, logout };

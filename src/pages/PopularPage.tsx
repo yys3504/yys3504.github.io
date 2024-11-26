@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { FaTable, FaList } from "react-icons/fa"; // 아이콘 추가
+import { FaTable, FaList } from "react-icons/fa";
 import "./PopularPage.css";
 
 interface Movie {
@@ -14,19 +14,18 @@ const PopularPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<"table" | "list">("list");
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [totalPages] = useState(10); // 총 페이지 수 제한
-  const moviesPerPage = 16; // 페이지당 영화 수
+  const [wishlist, setWishlist] = useState<Movie[]>([]);
+  const [totalPages] = useState(10);
+  const moviesPerPage = 16;
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 영화 데이터를 가져오는 함수
   const fetchMovies = async (page: number) => {
     setIsLoading(true);
-    const apiKey = localStorage.getItem("apiKey"); // 로그인 시 저장된 API 키 불러오기
+    const apiKey = localStorage.getItem("apiKey");
     if (!apiKey) {
-        console.error("API 키가 없습니다. 로그인하세요.");
-        return;
+      console.error("API 키가 없습니다. 로그인하세요.");
+      return;
     }
-    
     const baseUrl = "https://api.themoviedb.org/3/movie/popular";
     try {
       const response = await fetch(
@@ -43,9 +42,23 @@ const PopularPage: React.FC = () => {
 
   useEffect(() => {
     fetchMovies(page);
+
+    const storedWishlist = localStorage.getItem("wishlist");
+    if (storedWishlist) {
+      setWishlist(JSON.parse(storedWishlist));
+    }
   }, [page]);
 
-  // 페이지네이션 함수
+  const toggleWishlist = (movie: Movie) => {
+    const isInWishlist = wishlist.some((item) => item.id === movie.id);
+    const updatedWishlist = isInWishlist
+      ? wishlist.filter((item) => item.id !== movie.id)
+      : [...wishlist, movie];
+
+    setWishlist(updatedWishlist);
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+  };
+
   const handleNextPage = () => {
     if (page < totalPages) {
       setPage(page + 1);
@@ -56,6 +69,10 @@ const PopularPage: React.FC = () => {
     if (page > 1) {
       setPage(page - 1);
     }
+  };
+
+  const isMovieInWishlist = (movieId: number) => {
+    return wishlist.some((movie) => movie.id === movieId);
   };
 
   const paginatedMovies = movies.slice(
@@ -81,7 +98,6 @@ const PopularPage: React.FC = () => {
         }
       }}
     >
-      {/* 뷰 모드 변경 버튼 */}
       <div className="view-selector-icons">
         <button
           className={`view-icon-button ${viewMode === "table" ? "active" : ""}`}
@@ -96,12 +112,16 @@ const PopularPage: React.FC = () => {
           <FaList size={24} />
         </button>
       </div>
-
-      {/* 뷰 모드에 따른 렌더링 */}
       <div className={viewMode === "list" ? "movie-list" : "movie-table"}>
         {viewMode === "list"
           ? movies.map((movie) => (
-              <div className="movie-item-horizontal" key={movie.id}>
+              <div
+                className={`movie-item-horizontal ${
+                  isMovieInWishlist(movie.id) ? "highlighted" : ""
+                }`}
+                key={movie.id}
+                onClick={() => toggleWishlist(movie)}
+              >
                 <img
                   src={`https://image.tmdb.org/t/p/w400${movie.poster_path}`}
                   alt={movie.title}
@@ -114,7 +134,13 @@ const PopularPage: React.FC = () => {
               </div>
             ))
           : paginatedMovies.map((movie) => (
-              <div className="movie-item-table" key={movie.id}>
+              <div
+                className={`movie-item-table ${
+                  isMovieInWishlist(movie.id) ? "highlighted" : ""
+                }`}
+                key={movie.id}
+                onClick={() => toggleWishlist(movie)}
+              >
                 <img
                   src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                   alt={movie.title}
@@ -124,11 +150,7 @@ const PopularPage: React.FC = () => {
               </div>
             ))}
       </div>
-
-      {/* 로딩 표시 */}
       {isLoading && <div className="loading">로딩 중...</div>}
-
-      {/* 맨 위로 버튼 */}
       {viewMode === "list" && (
         <button
           className="top-button"
@@ -139,8 +161,6 @@ const PopularPage: React.FC = () => {
           맨 위로
         </button>
       )}
-
-      {/* 페이지네이션 */}
       {viewMode === "table" && (
         <div className="pagination">
           <button

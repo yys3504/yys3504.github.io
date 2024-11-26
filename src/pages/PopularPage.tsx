@@ -21,7 +21,11 @@ const PopularPage: React.FC = () => {
   // 영화 데이터를 가져오는 함수
   const fetchMovies = async (page: number) => {
     setIsLoading(true);
-    const apiKey = "b2fe57ddb2df376d8122bd8a24ee6e9a"; // 임시 API 키
+    const apiKey = localStorage.getItem("apiKey"); // 로그인 시 저장된 API 키 불러오기
+    if (!apiKey) {
+        console.error("API 키가 없습니다. 로그인하세요.");
+        return;
+    }
     const baseUrl = "https://api.themoviedb.org/3/movie/popular";
     try {
       const response = await fetch(

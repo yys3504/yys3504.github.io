@@ -13,6 +13,12 @@ const MainPage: React.FC = () => {
     const [romanceMovies, setRomanceMovies] = useState<Movie[]>([]);
 
     useEffect(() => {
+        const apiKey = localStorage.getItem("apiKey"); // 저장된 API 키 가져오기
+        if (!apiKey) {
+            console.error("API 키가 없습니다. 로그인하세요.");
+            return;
+        }
+
         const fetchMovies = async (
             url: string,
             setState: React.Dispatch<React.SetStateAction<Movie[]>>
@@ -33,7 +39,6 @@ const MainPage: React.FC = () => {
         };
 
         const baseUrl = "https://api.themoviedb.org/3";
-        const apiKey = "b2fe57ddb2df376d8122bd8a24ee6e9a";
 
         fetchMovies(
             `${baseUrl}/discover/movie?with_genres=28&api_key=${apiKey}`,

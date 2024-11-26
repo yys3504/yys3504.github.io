@@ -86,3 +86,11 @@
   right: 0;
   background: linear-gradient(to left, rgba(0, 0, 0, 1), transparent);
 }
+
+.movie-row-loading {
+  font-size: 1.2rem;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  padding: 20px 0;
+}

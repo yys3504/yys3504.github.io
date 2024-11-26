@@ -1,96 +1,84 @@
 .movie-row {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   position: relative;
 }
 
 .movie-row-title {
-  font-size: 1.5rem;
-  color: white;
-  margin-left: 60px;
+  font-size: 1.5em;
+  margin-left: 20px;
   margin-bottom: 10px;
 }
 
 .movie-row-container {
-  position: relative;
   display: flex;
   align-items: center;
-}
-
-.movie-row-content {
-  display: flex;
-  overflow-x: none;
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  padding: 0 80px; /* 양쪽 간격 */
-}
-
-.movie-row-content::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
-}
-
-.movie-poster {
-  max-width: 150px;
-  max-height: 225px;
-  margin-right: 10px;
-  transition: transform 0.2s ease-in-out;
-  cursor: pointer;
-}
-
-.movie-poster:hover {
-  transform: scale(1.1);
+  position: relative;
 }
 
 .movie-row-arrow {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   z-index: 2;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   border: none;
   color: white;
-  font-size: 2rem;
   cursor: pointer;
+  top: 50%;
+  transform: translateY(-50%);
   padding: 10px;
+  font-size: 1.5em;
   border-radius: 50%;
-  outline: none;
 }
 
 .movie-row-arrow-left {
-  left: 10px; /* 간격 */
+  left: 5px;
 }
 
 .movie-row-arrow-right {
-  right: 10px; /* 간격 */
+  right: 5px;
 }
 
-.movie-row-arrow:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+.movie-row-content {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 20px;
+  scrollbar-width: none;
 }
 
+.movie-wrapper {
+  position: relative;
+}
+
+.movie-poster {
+  max-height: 200px;
+  border-radius: 10px;
+  transition: transform 0.3s, border 0.3s;
+}
+
+.movie-poster:hover {
+  transform: scale(1.05);
+}
+
+.movie-poster.highlight {
+  border: 4px solid yellow;
+}
+
+/* 좌우 끝 부분에만 그라데이션 효과 */
 .movie-row-gradient-left,
 .movie-row-gradient-right {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 60px; /* 간격 */
-  z-index: 1;
+  width: 50px;
   pointer-events: none;
 }
 
 .movie-row-gradient-left {
   left: 0;
-  background: linear-gradient(to right, rgba(0, 0, 0, 1), transparent);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
 }
 
 .movie-row-gradient-right {
   right: 0;
-  background: linear-gradient(to left, rgba(0, 0, 0, 1), transparent);
-}
-
-.movie-row-loading {
-  font-size: 1.2rem;
-  color: #fff;
-  text-align: center;
-  width: 100%;
-  padding: 20px 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
 }

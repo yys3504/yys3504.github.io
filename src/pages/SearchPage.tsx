@@ -13,6 +13,7 @@ const SearchPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const [filters, setFilters] = useState({
     genreId: 0,
@@ -53,7 +54,7 @@ const SearchPage: React.FC = () => {
           with_genres: filters.genreId || undefined,
           "vote_average.gte": filters.rating > 0 ? filters.rating : undefined,
           sort_by: filters.sortBy,
-          language: "ko-KR", // 한국어로 데이터를 가져오기 위한 설정
+          language: "ko-KR",
         },
       });
 
@@ -77,10 +78,25 @@ const SearchPage: React.FC = () => {
   }, [filters, page]);
 
   const handleScroll = () => {
-    if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 200) {
+    const scrollTop = document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const offsetHeight = document.documentElement.offsetHeight;
+
+    if (scrollTop + windowHeight >= offsetHeight - 200) {
       fetchMovies();
     }
+
+    if (scrollTop > 300) {
+      setShowScrollToTop(true);
+    } else {
+      setShowScrollToTop(false);
+    }
   };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -107,6 +123,10 @@ const SearchPage: React.FC = () => {
     setMovies([]);
     setPage(1);
     setHasMore(true);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -140,8 +160,8 @@ const SearchPage: React.FC = () => {
       </div>
 
       <div className="movie-grid">
-        {movies.map((movie) => (
-          <div key={movie.id} className="movie-item">
+        {movies.map((movie, index) => (
+          <div key={`${movie.id}-${index}`} className="movie-item">
             <img
               src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
               alt={movie.title || "이미지 없음"}
@@ -153,6 +173,12 @@ const SearchPage: React.FC = () => {
 
       {loading && <p>로딩 중...</p>}
       {!hasMore && <p>더 이상 데이터가 없습니다.</p>}
+
+      {showScrollToTop && (
+        <button className="scroll-to-top" onClick={scrollToTop}>
+          맨 위로
+        </button>
+      )}
     </div>
   );
 };

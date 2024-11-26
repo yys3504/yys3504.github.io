@@ -1,0 +1,54 @@
+.search-container {
+    padding: 20px;
+    color: white;
+    background-color: #141414;
+  }
+  
+  .filter-options {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-options select,
+  .filter-options button {
+    padding: 10px;
+    background-color: #222;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .filter-options select:focus,
+  .filter-options button:focus {
+    outline: none;
+  }
+  
+  .movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+  }
+  
+  .movie-item {
+    text-align: center;
+  }
+  
+  .movie-item img {
+    width: 100%;
+    border-radius: 5px;
+    transition: transform 0.2s;
+  }
+  
+  .movie-item img:hover {
+    transform: scale(1.05);
+  }
+  
+  .movie-item h3 {
+    font-size: 16px;
+    margin-top: 10px;
+    color: white;
+  }
+  

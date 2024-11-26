@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { tryLogin, tryRegister } from "../utils/Authentication";
 import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
@@ -9,20 +9,19 @@ const SignInPage: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [isRegister, setIsRegister] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        showFieldsSequentially(3);
-        checkAuthentication();
-    }, []);
-
-    const checkAuthentication = () => {
+    const checkAuthentication = useCallback(() => {
         const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
         if (isAuthenticated) {
             navigate("/"); // 사용자가 이미 인증되었으면 메인 페이지로 이동
         }
-    };
+    }, [navigate]);
+
+    useEffect(() => {
+        showFieldsSequentially(3);
+        checkAuthentication();
+    }, [checkAuthentication]);
 
     const handleTabChange = (signIn: boolean) => {
         if (isSignIn !== signIn) {
@@ -57,8 +56,8 @@ const SignInPage: React.FC = () => {
             password,
             () => {
                 alert("회원가입 성공! 이제 로그인하세요.");
-                setIsRegister(false);
                 setPassword("");
+                setIsSignIn(true); // 회원가입 후 로그인 탭으로 이동
             },
             (err: Error) => setError(err.message || "회원가입에 실패했습니다.")
         );

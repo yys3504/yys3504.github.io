@@ -26,6 +26,7 @@ const PopularPage: React.FC = () => {
         console.error("API 키가 없습니다. 로그인하세요.");
         return;
     }
+    
     const baseUrl = "https://api.themoviedb.org/3/movie/popular";
     try {
       const response = await fetch(

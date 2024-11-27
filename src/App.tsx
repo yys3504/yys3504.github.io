@@ -13,13 +13,13 @@ const App: React.FC = () => {
     const authenticated = isAuthenticated();
 
     return (
-        <Router>
+        <Router basename="/your-repo-name">
             <div className="App">
                 {authenticated && (
                     <Header
                         onLogout={() => {
                             logout();
-                            window.location.href = "/signin"; // 로그아웃 시 로그인 화면으로 리다이렉트
+                            window.location.href = "/your-repo-name/signin"; // Adjusted for GitHub Pages
                         }}
                     />
                 )}

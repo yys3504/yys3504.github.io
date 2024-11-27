@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import "./SearchPage.css";
 
@@ -21,8 +21,9 @@ const SearchPage: React.FC = () => {
   });
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const fetchMoviesRef = useRef<() => Promise<void>>(() => Promise.resolve());
 
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
@@ -56,7 +57,9 @@ const SearchPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, page, loading, hasMore]);
+
+  fetchMoviesRef.current = fetchMovies;
 
   useEffect(() => {
     const storedWishlist = localStorage.getItem("wishlist");
@@ -66,12 +69,13 @@ const SearchPage: React.FC = () => {
     setMovies([]);
     setPage(1);
     setHasMore(true);
-    fetchMovies();
-  }, [filters]); // 의존성 배열에 filters 추가
+
+    fetchMoviesRef.current();
+  }, [filters]);
 
   useEffect(() => {
-    fetchMovies();
-  }, [page]); // 의존성 배열에 fetchMovies 추가
+    fetchMoviesRef.current();
+  }, [page]);
 
   const toggleWishlist = (movie: Movie) => {
     const exists = wishlist.some((item) => item.id === movie.id);
@@ -84,21 +88,22 @@ const SearchPage: React.FC = () => {
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
   };
 
-  const handleScroll = () => {
-    const { scrollTop, clientHeight, scrollHeight } = scrollContainerRef.current!;
-    if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
-
   useEffect(() => {
     const container = scrollContainerRef.current;
+
+    const handleScroll = () => {
+      const { scrollTop, clientHeight, scrollHeight } = container!;
+      if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore && !loading) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+
     container?.addEventListener("scroll", handleScroll);
 
     return () => {
       container?.removeEventListener("scroll", handleScroll);
     };
-  }, [hasMore]); // 의존성 배열에 hasMore 추가
+  }, [hasMore, loading]);
 
   const scrollToTop = () => {
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });

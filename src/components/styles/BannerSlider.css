@@ -75,3 +75,40 @@
   text-align: center;
   padding: 20px 0;
 }
+
+/* 태블릿 (화면 너비 768px 이하) */
+@media screen and (max-width: 768px) {
+  .banner-slider__image {
+    height: 50vh; /* 배너 높이 축소 */
+  }
+
+  .banner-slider__title {
+    font-size: 2rem; /* 텍스트 크기 축소 */
+  }
+
+  .banner-slider__description {
+    font-size: 1rem; /* 설명 크기 축소 */
+    line-height: 1.4; /* 줄 간격 조정 */
+  }
+}
+
+/* 모바일 (화면 너비 480px 이하) */
+@media screen and (max-width: 480px) {
+  .banner-slider__image {
+    height: 40vh; /* 더 작은 배너 높이 */
+  }
+
+  .banner-slider__title {
+    font-size: 1.5rem; /* 제목 크기 축소 */
+  }
+
+  .banner-slider__description {
+    font-size: 0.9rem; /* 설명 크기 축소 */
+    line-height: 1.2; /* 줄 간격 축소 */
+  }
+
+  .banner-slider__buttons {
+    flex-direction: column; /* 버튼 세로 정렬 */
+    gap: 5px;
+  }
+}

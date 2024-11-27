@@ -14,6 +14,9 @@
   display: flex;
   align-items: center;
   position: relative;
+  overflow-x: auto;
+  padding: 10px 40px;
+  scroll-behavior: smooth;
 }
 
 .movie-row-arrow {
@@ -91,4 +94,25 @@
 .movie-row-fade-right {
   right: 0;
   transform: rotate(180deg);
+}
+
+@media screen and (max-width: 768px) {
+  .movie-wrapper {
+    flex: 0 0 150px; /* 영화 포스터 크기 축소 */
+  }
+
+  .movie-row-container {
+    padding: 10px 20px; /* 패딩 축소 */
+  }
+}
+
+/* 모바일 (화면 너비 480px 이하) */
+@media screen and (max-width: 480px) {
+  .movie-wrapper {
+    flex: 0 0 120px; /* 영화 포스터 더 축소 */
+  }
+
+  .movie-row-container {
+    padding: 10px; /* 더 작은 패딩 */
+  }
 }

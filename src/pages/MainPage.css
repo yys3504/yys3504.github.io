@@ -13,3 +13,25 @@
   margin-bottom: 20px;
   border-radius: 10px;
 }
+
+@media screen and (max-width: 768px) {
+  .banner {
+    height: 250px; /* 배너 높이 축소 */
+  }
+
+  .main-page {
+    padding: 15px;
+  }
+}
+
+/* 모바일 (화면 너비 480px 이하) */
+@media screen and (max-width: 480px) {
+  .banner {
+    height: 200px; /* 배너 높이 더 축소 */
+    margin-bottom: 15px;
+  }
+
+  .main-page {
+    padding: 10px;
+  }
+}

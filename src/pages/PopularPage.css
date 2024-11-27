@@ -119,14 +119,16 @@
     cursor: pointer;
     border-radius: 5px;
 }
+
+/* 페이징 스타일 */
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
-  }
-  
-  .pagination-button {
+}
+
+.pagination-button {
     margin: 0 10px;
     padding: 10px 20px;
     background-color: #333;
@@ -134,19 +136,74 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-  }
-  
-  .pagination-button:disabled {
+}
+
+.pagination-button:disabled {
     background-color: #555;
     cursor: not-allowed;
-  }
-  
-  .pagination-info {
+}
+
+.pagination-info {
     font-size: 16px;
     color: white;
-  }
-  .movie-item-horizontal.highlighted,
-  .movie-item-table.highlighted {
+}
+
+/* 강조 표시된 영화 항목 */
+.movie-item-horizontal.highlighted,
+.movie-item-table.highlighted {
     border: 3px solid yellow;
     border-radius: 10px;
-  }
+}
+
+/* 반응형 웹 추가 */
+/* 태블릿 (화면 너비 768px 이하) */
+@media screen and (max-width: 768px) {
+    .movie-poster-horizontal {
+        width: 150px; /* 영화 포스터 크기 축소 */
+    }
+
+    .movie-title-horizontal {
+        font-size: 1.5rem; /* 제목 크기 축소 */
+    }
+
+    .movie-description-horizontal {
+        font-size: 1rem;
+        -webkit-line-clamp: 2; /* 최대 2줄까지만 표시 */
+    }
+
+    .movie-table {
+        gap: 15px;
+    }
+
+    .movie-item-table {
+        width: 150px; /* 카드 크기 축소 */
+    }
+}
+
+/* 모바일 (화면 너비 480px 이하) */
+@media screen and (max-width: 480px) {
+    .movie-poster-horizontal {
+        width: 120px; /* 영화 포스터 더 축소 */
+    }
+
+    .movie-title-horizontal {
+        font-size: 1.2rem; /* 제목 크기 더 축소 */
+    }
+
+    .movie-description-horizontal {
+        font-size: 0.9rem;
+        -webkit-line-clamp: 1; /* 최대 1줄까지만 표시 */
+    }
+
+    .movie-table {
+        gap: 10px;
+    }
+
+    .movie-item-table {
+        width: 120px; /* 카드 크기 더 축소 */
+    }
+
+    .top-button {
+        padding: 5px 10px; /* 버튼 크기 축소 */
+    }
+}

@@ -1,6 +1,6 @@
 .banner-slider {
-  width: 90%; /* 양 옆 간격 추가 */
-  margin: 0 auto; /* 가운데 정렬 */
+  width: 90%;
+  margin: 0 auto;
   position: relative;
   overflow: hidden;
 }
@@ -20,26 +20,31 @@
 
 .banner-slider__content {
   position: absolute;
-  bottom: 15%; /* 배너 하단에서 15% 위로 */
-  left: 5%; /* 배너 왼쪽에서 5% 간격 */
+  bottom: 0; /* 배너 맨 아래로 이동 */
+  left: 0;
+  width: 100%; /* 전체 너비 사용 */
+  background: rgba(0, 0, 0, 0.7); /* 텍스트 배경 */
   color: white;
-  max-width: 40%;
+  padding: 20px;
+  box-sizing: border-box;
   z-index: 2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); /* 텍스트를 더 선명하게 */
 }
 
 .banner-slider__title {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .banner-slider__description {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  margin-bottom: 20px;
-  overflow: hidden; /* 설명 텍스트가 넘칠 경우 숨김 */
-  text-overflow: ellipsis; /* 길어진 텍스트를 줄임표로 표시 */
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 최대 2줄까지만 표시 */
+  -webkit-box-orient: vertical;
 }
 
 .banner-slider__buttons {
@@ -51,21 +56,14 @@
   padding: 10px 20px;
   font-size: 1rem;
   border: none;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: black;
   cursor: pointer;
   border-radius: 5px;
-  transition: all 0.3s;
 }
 
 .banner-slider__button.highlighted {
   background-color: yellow;
-  color: black;
-  font-weight: bold;
-}
-
-.banner-slider__button:hover {
-  background-color: rgba(255, 255, 255, 0.9);
   color: black;
 }
 
@@ -74,41 +72,4 @@
   color: #fff;
   text-align: center;
   padding: 20px 0;
-}
-
-/* 태블릿 (화면 너비 768px 이하) */
-@media screen and (max-width: 768px) {
-  .banner-slider__image {
-    height: 50vh; /* 배너 높이 축소 */
-  }
-
-  .banner-slider__title {
-    font-size: 2rem; /* 텍스트 크기 축소 */
-  }
-
-  .banner-slider__description {
-    font-size: 1rem; /* 설명 크기 축소 */
-    line-height: 1.4; /* 줄 간격 조정 */
-  }
-}
-
-/* 모바일 (화면 너비 480px 이하) */
-@media screen and (max-width: 480px) {
-  .banner-slider__image {
-    height: 40vh; /* 더 작은 배너 높이 */
-  }
-
-  .banner-slider__title {
-    font-size: 1.5rem; /* 제목 크기 축소 */
-  }
-
-  .banner-slider__description {
-    font-size: 0.9rem; /* 설명 크기 축소 */
-    line-height: 1.2; /* 줄 간격 축소 */
-  }
-
-  .banner-slider__buttons {
-    flex-direction: column; /* 버튼 세로 정렬 */
-    gap: 5px;
-  }
 }

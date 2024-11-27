@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Header from "./components/Header";
 import MainPage from "./pages/MainPage";
 import PopularPage from "./pages/PopularPage";
@@ -13,13 +13,13 @@ const App: React.FC = () => {
     const authenticated = isAuthenticated();
 
     return (
-        <Router basename="/your-repo-name">
+        <Router basename="/yys3504.github.io">
             <div className="App">
                 {authenticated && (
                     <Header
                         onLogout={() => {
                             logout();
-                            window.location.href = "/your-repo-name/signin"; // Adjusted for GitHub Pages
+                            window.location.reload(); // 간단한 새로고침 처리
                         }}
                     />
                 )}

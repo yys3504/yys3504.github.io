@@ -44,7 +44,7 @@ const SignInPage: React.FC = () => {
             password,
             () => {
                 alert("로그인 성공!");
-                navigate("/");
+                window.location.href = "/"; // 메인 페이지로 이동
             },
             () => setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.")
         );
@@ -61,6 +61,13 @@ const SignInPage: React.FC = () => {
             },
             (err: Error) => setError(err.message || "회원가입에 실패했습니다.")
         );
+    };
+
+    const handleLogout = () => {
+        // 사용자 상태 초기화 및 홈으로 리다이렉트
+        localStorage.clear();
+        alert("로그아웃되었습니다.");
+        navigate("/signin"); // React Router로 리다이렉트
     };
 
     return (

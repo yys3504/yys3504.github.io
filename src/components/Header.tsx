@@ -1,13 +1,21 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./styles/Header.css";
 
 interface HeaderProps {
     onLogout: () => void; // 로그아웃 콜백 함수
 }
 
-const Header: React.FC<HeaderProps> = ({ onLogout }) => {
+const Header: React.FC<HeaderProps> = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+      // 사용자 상태 초기화 및 홈으로 리다이렉트
+      localStorage.clear();
+      alert("로그아웃되었습니다.");
+      navigate("/signin"); // React Router로 리다이렉트
+    };
 
     return (
         <header className="header">
@@ -51,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
                 </Link>
             </nav>
             <div className="header__right">
-                <button className="header__logout" onClick={onLogout}>
+                <button className="header__logout" onClick={handleLogout}>
                     로그아웃
                 </button>
             </div>

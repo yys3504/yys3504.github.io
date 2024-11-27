@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import MainPage from "./pages/MainPage";
 import PopularPage from "./pages/PopularPage";
@@ -14,15 +14,6 @@ const App: React.FC = () => {
 
     return (
         <Router>
-            <div className="App">
-                {authenticated && (
-                    <Header
-                        onLogout={() => {
-                            logout();
-                            window.location.href = "/signin"; // 로그아웃 시 로그인 화면으로 리다이렉트
-                        }}
-                    />
-                )}
                 <Routes>
                     <Route
                         path="/"
@@ -42,7 +33,6 @@ const App: React.FC = () => {
                     />
                     <Route path="/signin" element={<SignInPage />} />
                 </Routes>
-            </div>
         </Router>
     );
 };

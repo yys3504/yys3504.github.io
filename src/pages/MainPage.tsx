@@ -40,6 +40,7 @@ const MainPage: React.FC = () => {
         console.error("Failed to fetch movies:", error);
       }
     };
+    
 
     const baseUrl = "https://api.themoviedb.org/3";
     fetchMovies(`${baseUrl}/discover/movie?with_genres=28&api_key=${apiKey}`, setActionMovies);

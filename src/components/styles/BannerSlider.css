@@ -58,6 +58,12 @@
   transition: all 0.3s;
 }
 
+.banner-slider__button.highlighted {
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+}
+
 .banner-slider__button:hover {
   background-color: rgba(255, 255, 255, 0.9);
   color: black;

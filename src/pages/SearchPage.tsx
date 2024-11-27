@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import "./SearchPage.css";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import "./SearchPage.css";
 
 interface Movie {
   id: number;
@@ -10,37 +10,17 @@ interface Movie {
 
 const SearchPage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [showScrollToTop, setShowScrollToTop] = useState(false);
-
+  const [wishlist, setWishlist] = useState<Movie[]>([]);
   const [filters, setFilters] = useState({
-    genreId: 0,
-    rating: -1,
+    genreId: "0",
+    rating: "-1",
     sortBy: "popularity.desc",
   });
 
-  const genreOptions: Record<string, number> = {
-    "장르 (전체)": 0,
-    액션: 28,
-    어린이: 10751,
-    로맨스: 10749,
-  };
-
-  const ratingOptions: Record<string, number> = {
-    "평점 (전체)": -1,
-    "6점 이상": 6,
-    "7점 이상": 7,
-    "8점 이상": 8,
-    "9점 이상": 9,
-  };
-
-  const sortOptions: Record<string, string> = {
-    인기순: "popularity.desc",
-    평점순: "vote_average.desc",
-    최신순: "release_date.desc",
-  };
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const fetchMovies = async () => {
     if (loading || !hasMore) return;
@@ -51,8 +31,8 @@ const SearchPage: React.FC = () => {
         params: {
           api_key: localStorage.getItem("apiKey"),
           page,
-          with_genres: filters.genreId || undefined,
-          "vote_average.gte": filters.rating > 0 ? filters.rating : undefined,
+          with_genres: filters.genreId !== "0" ? filters.genreId : undefined,
+          "vote_average.gte": filters.rating !== "-1" ? parseInt(filters.rating) : undefined,
           sort_by: filters.sortBy,
           language: "ko-KR",
         },
@@ -63,8 +43,13 @@ const SearchPage: React.FC = () => {
       if (newMovies.length === 0) {
         setHasMore(false);
       } else {
-        setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-        setPage((prevPage) => prevPage + 1);
+        setMovies((prevMovies) => [
+          ...prevMovies,
+          ...newMovies.filter(
+            (movie: Movie) =>
+              !prevMovies.some((existingMovie: Movie) => existingMovie.id === movie.id)
+          ),
+        ]);
       }
     } catch (error) {
       console.error("Failed to fetch movies:", error);
@@ -74,111 +59,119 @@ const SearchPage: React.FC = () => {
   };
 
   useEffect(() => {
+    const storedWishlist = localStorage.getItem("wishlist");
+    if (storedWishlist) {
+      setWishlist(JSON.parse(storedWishlist));
+    }
+    setMovies([]);
+    setPage(1);
+    setHasMore(true);
     fetchMovies();
-  }, [filters, page]);
+  }, [filters]);
+
+  useEffect(() => {
+    fetchMovies();
+  }, [page]);
+
+  const toggleWishlist = (movie: Movie) => {
+    const exists = wishlist.some((item) => item.id === movie.id);
+
+    const updatedWishlist = exists
+      ? wishlist.filter((item) => item.id !== movie.id)
+      : [...wishlist, movie];
+
+    setWishlist(updatedWishlist);
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+  };
 
   const handleScroll = () => {
-    const scrollTop = document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const offsetHeight = document.documentElement.offsetHeight;
-
-    if (scrollTop + windowHeight >= offsetHeight - 200) {
-      fetchMovies();
-    }
-
-    if (scrollTop > 300) {
-      setShowScrollToTop(true);
-    } else {
-      setShowScrollToTop(false);
+    const { scrollTop, clientHeight, scrollHeight } = scrollContainerRef.current!;
+    if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
+      setPage((prevPage) => prevPage + 1);
     }
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const container = scrollContainerRef.current;
+    container?.addEventListener("scroll", handleScroll);
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleFilterChange = (filterType: string, value: string | number) => {
-    setMovies([]);
-    setPage(1);
-    setHasMore(true);
-
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [filterType]: value,
-    }));
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      genreId: 0,
-      rating: -1,
-      sortBy: "popularity.desc",
-    });
-    setMovies([]);
-    setPage(1);
-    setHasMore(true);
-  };
+    return () => {
+      container?.removeEventListener("scroll", handleScroll);
+    };
+  }, [hasMore]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const updateFilters = (key: keyof typeof filters, value: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
-    <div className="search-container">
+    <div className="search-page" ref={scrollContainerRef}>
       <div className="filter-options">
-        <select value={filters.genreId} onChange={(e) => handleFilterChange("genreId", Number(e.target.value))}>
-          {Object.keys(genreOptions).map((key) => (
-            <option key={key} value={genreOptions[key]}>
-              {key}
-            </option>
-          ))}
+        <select onChange={(e) => updateFilters("genreId", e.target.value)}>
+          <option value="0">장르 (전체)</option>
+          <option value="28">액션</option>
+          <option value="27">공포</option>
+          <option value="35">코미디</option>
+          <option value="10751">어린이</option>
+          <option value="10749">로맨스</option>
         </select>
 
-        <select value={filters.rating} onChange={(e) => handleFilterChange("rating", Number(e.target.value))}>
-          {Object.keys(ratingOptions).map((key) => (
-            <option key={key} value={ratingOptions[key]}>
-              {key}
-            </option>
-          ))}
+        <select onChange={(e) => updateFilters("rating", e.target.value)}>
+          <option value="-1">평점 (전체)</option>
+          <option value="6">6점 이상</option>
+          <option value="7">7점 이상</option>
+          <option value="8">8점 이상</option>
+          <option value="9">9점 이상</option>
         </select>
 
-        <select value={filters.sortBy} onChange={(e) => handleFilterChange("sortBy", e.target.value)}>
-          {Object.keys(sortOptions).map((key) => (
-            <option key={key} value={sortOptions[key]}>
-              {key}
-            </option>
-          ))}
+        <select onChange={(e) => updateFilters("sortBy", e.target.value)}>
+          <option value="popularity.desc">인기순</option>
+          <option value="vote_average.desc">평점순</option>
+          <option value="release_date.desc">최신순</option>
         </select>
-
-        <button onClick={resetFilters}>초기화</button>
       </div>
 
       <div className="movie-grid">
-        {movies.map((movie, index) => (
-          <div key={`${movie.id}-${index}`} className="movie-item">
+        {movies.map((movie) => (
+          <div
+            key={`movie-${movie.id}`}
+            className={`movie-item ${wishlist.some((item) => item.id === movie.id) ? "highlighted" : ""}`}
+            onClick={() => toggleWishlist(movie)}
+          >
             <img
               src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
-              alt={movie.title || "이미지 없음"}
+              alt={movie.title}
+              className="movie-poster"
             />
-            <h3>{movie.title}</h3>
+            <h3 className="movie-title">{movie.title}</h3>
           </div>
         ))}
       </div>
 
-      {loading && <p>로딩 중...</p>}
-      {!hasMore && <p>더 이상 데이터가 없습니다.</p>}
+      {loading && <div className="loading">로딩 중...</div>}
 
-      {showScrollToTop && (
-        <button className="scroll-to-top" onClick={scrollToTop}>
-          맨 위로
-        </button>
-      )}
+      <div className="wishlist-section">
+        <h2>추천 영화 목록</h2>
+        <div className="wishlist-grid">
+          {wishlist.map((movie) => (
+            <div key={movie.id} className="wishlist-item">
+              <img
+                src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
+                alt={movie.title}
+              />
+              <button onClick={() => toggleWishlist(movie)}>제거</button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button className="scroll-to-top" onClick={scrollToTop}>
+        Top
+      </button>
     </div>
   );
 };

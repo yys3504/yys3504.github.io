@@ -33,9 +33,16 @@
   color: white;
   text-decoration: none;
   font-size: 16px;
+  position: relative;
 }
 
 .header__link:hover {
+  text-decoration: underline;
+}
+
+.header__link.active {
+  color: white;
+  font-weight: bold;
   text-decoration: underline;
 }
 

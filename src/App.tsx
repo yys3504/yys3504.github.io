@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Header from "./components/Header";
 import MainPage from "./pages/MainPage";
 import PopularPage from "./pages/PopularPage";
@@ -11,18 +11,17 @@ import "./App.css";
 
 const App: React.FC = () => {
     const authenticated = isAuthenticated();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/signin");
+    };
 
     return (
         <Router basename="/yys3504.github.io">
             <div className="App">
-                {authenticated && (
-                    <Header
-                        onLogout={() => {
-                            logout();
-                            window.location.reload(); // 간단한 새로고침 처리
-                        }}
-                    />
-                )}
+                {authenticated && <Header onLogout={handleLogout} />}
                 <Routes>
                     <Route
                         path="/"

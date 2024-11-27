@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import "./SearchPage.css";
 
@@ -22,7 +22,7 @@ const SearchPage: React.FC = () => {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
@@ -56,7 +56,7 @@ const SearchPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, hasMore, loading, page]);
 
   useEffect(() => {
     const storedWishlist = localStorage.getItem("wishlist");
@@ -67,11 +67,13 @@ const SearchPage: React.FC = () => {
     setPage(1);
     setHasMore(true);
     fetchMovies();
-  }, [filters]);
+  }, [fetchMovies]);
 
   useEffect(() => {
-    fetchMovies();
-  }, [page]);
+    if (page > 1) {
+      fetchMovies();
+    }
+  }, [page, fetchMovies]);
 
   const toggleWishlist = (movie: Movie) => {
     const exists = wishlist.some((item) => item.id === movie.id);
@@ -84,12 +86,12 @@ const SearchPage: React.FC = () => {
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
   };
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const { scrollTop, clientHeight, scrollHeight } = scrollContainerRef.current!;
     if (scrollTop + clientHeight >= scrollHeight - 50 && hasMore) {
       setPage((prevPage) => prevPage + 1);
     }
-  };
+  }, [hasMore]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -98,7 +100,7 @@ const SearchPage: React.FC = () => {
     return () => {
       container?.removeEventListener("scroll", handleScroll);
     };
-  }, [hasMore]);
+  }, [handleScroll]);
 
   const scrollToTop = () => {
     scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });

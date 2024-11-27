@@ -63,13 +63,6 @@ const SignInPage: React.FC = () => {
         );
     };
 
-    const handleLogout = () => {
-        // 사용자 상태 초기화 및 홈으로 리다이렉트
-        localStorage.clear();
-        alert("로그아웃되었습니다.");
-        navigate("/signin"); // React Router로 리다이렉트
-    };
-
     return (
         <div className="centered-container">
             <div className="container">

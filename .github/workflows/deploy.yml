@@ -20,8 +20,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build project
-        run: npm run build
+      - name: Deploy to GitHub Pages
+        run: npm run build && cp build/index.html build/404.html && git add build
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3

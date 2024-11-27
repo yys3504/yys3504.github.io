@@ -24,21 +24,25 @@ const MovieRow: React.FC<MovieRowProps> = ({
 
   const handleScroll = (direction: "left" | "right") => {
     if (rowRef.current) {
-      const { scrollLeft, clientWidth, scrollWidth } = rowRef.current;
-      const maxScrollLeft = scrollWidth - clientWidth;
+      const scrollAmount = rowRef.current.offsetWidth; // 한 번에 보이는 크기만큼 스크롤
+      rowRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
-      let scrollTo =
-        direction === "left"
-          ? scrollLeft - clientWidth
-          : scrollLeft + clientWidth;
-
-      if (direction === "right" && scrollLeft >= maxScrollLeft) {
-        scrollTo = 0;
-      } else if (direction === "left" && scrollLeft <= 0) {
-        scrollTo = maxScrollLeft;
+  const handleEndScroll = (direction: "left" | "right") => {
+    if (rowRef.current) {
+      if (direction === "left" && rowRef.current.scrollLeft === 0) {
+        rowRef.current.scrollLeft = rowRef.current.scrollWidth;
+      } else if (
+        direction === "right" &&
+        rowRef.current.scrollLeft + rowRef.current.offsetWidth >=
+          rowRef.current.scrollWidth
+      ) {
+        rowRef.current.scrollLeft = 0;
       }
-
-      rowRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
     }
   };
 
@@ -46,9 +50,13 @@ const MovieRow: React.FC<MovieRowProps> = ({
     <div className="movie-row">
       <h2 className="movie-row-title">{title}</h2>
       <div className="movie-row-container">
+        <div className="movie-row-fade movie-row-fade-left" />
         <button
           className="movie-row-arrow movie-row-arrow-left"
-          onClick={() => handleScroll("left")}
+          onClick={() => {
+            handleScroll("left");
+            handleEndScroll("left");
+          }}
         >
           &lt;
         </button>
@@ -68,13 +76,14 @@ const MovieRow: React.FC<MovieRowProps> = ({
         </div>
         <button
           className="movie-row-arrow movie-row-arrow-right"
-          onClick={() => handleScroll("right")}
+          onClick={() => {
+            handleScroll("right");
+            handleEndScroll("right");
+          }}
         >
           &gt;
         </button>
-        {/* 좌우 끝에만 그라데이션 추가 */}
-        <div className="movie-row-gradient-left"></div>
-        <div className="movie-row-gradient-right"></div>
+        <div className="movie-row-fade movie-row-fade-right" />
       </div>
     </div>
   );

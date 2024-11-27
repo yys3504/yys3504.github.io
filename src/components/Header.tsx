@@ -13,7 +13,7 @@ const Header: React.FC<HeaderProps> = ({ onLogout }) => {
         <header className="header">
             <div className="header__left">
                 <Link to="/" className="header__logo">
-                    Netflix
+                    Netflix_Demo
                 </Link>
             </div>
             <nav className="header__nav">

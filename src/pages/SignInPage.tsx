@@ -44,7 +44,7 @@ const SignInPage: React.FC = () => {
             password,
             () => {
                 alert("로그인 성공!");
-                window.location.href = "/"; // 메인 페이지로 이동
+                navigate("/");
             },
             () => setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.")
         );
